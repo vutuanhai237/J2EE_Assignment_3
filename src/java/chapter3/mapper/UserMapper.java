@@ -61,7 +61,24 @@ public class UserMapper extends DBMapper {
         return success;
     }
     
-        public Boolean updateAccountForUser (Integer id, String username, String password, String firstname, String lastname, String sex, String address, String email, String mobilePhone){
+    public Integer getUserIDFromUsername (String username) {
+        Integer userID = -1;
+        try{
+            Statement stmt = getConnection().createStatement();
+            String sqlStr = "SELECT id FROM USER_ACCOUNT WHERE username = " + username;
+            ResultSet rs = stmt.executeQuery(sqlStr);
+            int count = 0;
+            while (rs != null && rs.next()){
+                userID = rs.getInt("id");
+            }
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+        
+        return userID;
+    }
+    
+    public Boolean updateAccountForUser (Integer id, String username, String password, String firstname, String lastname, String sex, String address, String email, String mobilePhone){
         Boolean success = false;
         try{
             Statement stmt = getConnection().createStatement();
@@ -121,6 +138,33 @@ public class UserMapper extends DBMapper {
         }
         
         return users;
+    }
+    
+    public UserDTO getUserByID (Integer ID){
+        UserDTO user = null;
+        try{
+            Statement stmt = getConnection().createStatement();
+            String sqlStr = "SELECT * FROM USER_ACCOUNT WHERE id = " + ID;
+            ResultSet rs = stmt.executeQuery(sqlStr);
+            int count = 0;
+            while (rs != null && rs.next()){
+                user = new UserDTO();
+                user.setId(rs.getInt("id"));
+                user.setAddress(rs.getString("address"));
+                user.setEmail(rs.getString("email"));
+                user.setFirstname(rs.getString("firstname"));
+                user.setGroupname(rs.getString("groupname"));
+                user.setLastname(rs.getString("lastname"));
+                user.setMobile(rs.getString("mobile"));
+                user.setPassword(rs.getString("pass"));
+                user.setSex("sex");
+                user.setUsername("username");
+            }
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+        
+        return user;
     }
     
     public ArrayList<UserDTO> searchUsers (String username, String usergroup, String firstname, String lastname, String sex, String email, String address, String mobile) {

@@ -5,15 +5,20 @@
  */
 package chapter3.controller;
 
+import chapter3.bo.AdminBO;
 import chapter3.dbconnection.DBConnectionService;
+import com.sun.corba.se.spi.presentation.rmi.StubAdapter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
+import javax.servlet.DispatcherType;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -25,24 +30,26 @@ public class IndexServlet extends HttpServlet {
     
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Connection conn = null;
-        Boolean success = false;
-        try{
-            conn = DBConnectionService.getConnection();
-            success = true;
-        }catch (Exception ex){
-            
+        
+        AdminBO adminBO = new AdminBO(req.getServletContext());
+        
+        HttpSession session = req.getSession();
+        RequestDispatcher dispatchToLogin = req.getRequestDispatcher("./WEB-INF/jsp/login.jsp");
+        RequestDispatcher dispatchToAdmin = req.getRequestDispatcher("./WEB-INF/jsp/admin.jsp");
+        RequestDispatcher dispatchToUser = req.getRequestDispatcher("/WEB-INF/user_info.jsp");
+        Integer userID;
+        
+        synchronized (session){
+            userID = (Integer) session.getAttribute("userID");
         }
         
-        if (conn == null)
-            success = false;
+        if (userID == null)
+            dispatchToLogin.forward(req, resp);
+        else if (adminBO.checkPermission(userID))
+            dispatchToLogin.forward(req, resp);
+        else
+            dispatchToUser.forward(req, resp);
         
-        try (PrintWriter out = resp.getWriter()){
-            if (success)
-                out.print("SUCCESS");
-            else
-                out.print("ERROR");
-        }
     }
 
     /**

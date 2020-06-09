@@ -29,7 +29,7 @@ public class AdminBO {
         }catch (Exception ex){
             ex.printStackTrace();
         }
-        return null;
+        return false;
     }
     
     public Boolean createUserAccount (String username, String password, String firstname, String lastname, String sex, String address, String email, String mobilePhone){
@@ -39,7 +39,7 @@ public class AdminBO {
         }catch (Exception ex){
             ex.printStackTrace();
         }
-        return null;
+        return false;
     }
     
     public Boolean updateUserAccount (Integer id, String username, String password, String firstname, String lastname, String sex, String address, String email, String mobilePhone){
@@ -49,7 +49,7 @@ public class AdminBO {
         }catch (Exception ex){
             ex.printStackTrace();
         }
-        return null;
+        return false;
     }
     
     public Boolean deleteUserAccount (Integer id){
@@ -59,7 +59,7 @@ public class AdminBO {
         }catch (Exception ex){
             ex.printStackTrace();
         }
-        return null;
+        return false;
     }
     
     public ArrayList<UserDTO> getUsers(){
@@ -80,5 +80,19 @@ public class AdminBO {
             ex.printStackTrace();
         }
         return null;
+    }
+    
+    public Boolean checkPermission (Integer userID){
+        try{
+            UserMapper mapper = new UserMapper();
+            UserDTO user = mapper.getUserByID(userID);
+            if (user != null && user.getGroupname() == "ADMIN")
+                return true;
+            else
+                return false;
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+        return false;
     }
 }

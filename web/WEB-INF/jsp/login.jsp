@@ -12,7 +12,7 @@ and open the template in the editor.
     </head>
     <body>
         <h1>Login page</h1>
-         <form action="login">
+         <form action="login" method = "post">
             <p>Username: </p>
             <input type="text" name="username">
             <p>Password: </p>
