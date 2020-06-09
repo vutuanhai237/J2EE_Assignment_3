@@ -61,7 +61,7 @@ public class UserMapper extends DBMapper {
         return success;
     }
     
-    public Boolean updateAccountForUser (Integer id, String username, String password, String firstname, String lastname, String sex, String address, String email, String mobilePhone){
+        public Boolean updateAccountForUser (Integer id, String username, String password, String firstname, String lastname, String sex, String address, String email, String mobilePhone){
         Boolean success = false;
         try{
             Statement stmt = getConnection().createStatement();
